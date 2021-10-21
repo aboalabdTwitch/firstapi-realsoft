@@ -963,18 +963,4 @@
         "SURVEY_STATUS_AR":"منتهية",
         "SURVEY_STATUS_EN":"Expired",
         "SurveyPeriods":"[{\"ID\":5670,\"START_DATE\":\"2020-04-12T00:00:00\",\"END_DATE\":\"2020-04-29T00:00:00\"}]"
-    },
-    {
-        "TEMPLATE_ID":20414,
-        "TemplateName":"Call Center test - Call Center ",
-        "TemplateNameAr":"فحص مركز اتصال- مركز اتصال ",
-        "TemplateNameEn":"Call Center test - Call Center ",
-        "SurveyName":"Call Center test",
-        "SurveyNameAr":"فحص مركز اتصال",
-        "SurveyNameEn":"Call Center test",
-        "SRV_ID":7559,
-        "SystemType":3,
-        "SURVEY_STATUS_AR":"منتهية",
-        "SURVEY_STATUS_EN":"Expired",
-        "SurveyPeriods":"[{\"ID\":5664,\"START_DATE\":\"2020-04-06T00:00:00\",\"END_DATE\":\"2020-04-29T00:00:00\"}]"
     }]]
