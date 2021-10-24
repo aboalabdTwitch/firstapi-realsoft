@@ -2,87 +2,124 @@ const express = require('express');
 
 const app=express();
 
+
 const fs = require('fs');
 const path = require('path');
 
 var cors = require('cors');
+app.use(express.json());
 
 app.use(cors());
+
+const port = process.env.PORT || 3000;
 
 
 app.get('/', function (req, res) {
     res.send('GET request to homepage')
   })
 
+
   
   app.get('/surveys', function (req, res) {
     fs.readFile('data.json','utf8', (err,data)=>{res.json(data)})    
   })
-  app.get('/surveys/:id', function (req, res) {
-    //console.log(req.params.id);
-     let rawdata = fs.readFileSync(path.resolve(__dirname, 'data.json'));
-     let student = JSON.parse(rawdata);
-     console.log(student);
  
-  })
 
-  app.listen(3000,()=>{
-      console.log('Running');
+  app.listen(port,()=>{
+      console.log('Running ');
   })
 
   app.put('/update/:surveyId', (req, res) => {
-    const user = req.params.surveyId;
-    let rawdata = fs.readFileSync(path.resolve(__dirname, 'data.json'));
-     let surveys = JSON.parse(rawdata);
-    // let surveys = rawdata;
 
-    // res.send(surveys);
-    let user2=null;
+    const surveyId = req.params.surveyId;
+    let surveys = readData();
+    let found=false;
      
    
-    for(let x of surveys){
-        for(let d of x){
-            if(d.TEMPLATE_ID==user)
-            {
-              user2=d;
-              d.TemplateNameEn='hello';
-              //res.send(d);
-              //console.log(d)
+    for(let arrayOfSurvey of surveys)
+    {
+      for(let survey of arrayOfSurvey)
+      {
+          if(survey.TEMPLATE_ID==surveyId)
+          {
+              found=true;
+              survey.SurveyNameEn=req.body.name;
               break;
-             }
-
-           }       
-    
-
+          }
+      }       
     }
-    
-    if(user2){
-        //fs.writeFile('data.json', JSON.stringify(surveys))
-        fs.writeFile('/Users/joe/test.txt',  JSON.stringify(surveys), err => {
-            if (err) {
-                res.status(400).send(err);
-              console.error(err)
-              return
-            }
-            //file written successfully
-          })
+
+    if(found){
+        writeData(surveys)
         res.send('found')
-
     }else{
-        res.status(400).send('not found ');
+        res.send('not found ');
     }
-
-
-
-
-
-
     
   });
 
 
+  app.delete('/delete/:surveyId',(req, res) =>{
+
+    const surveyId = req.params.surveyId;
+    let surveys = readData();
+    let newData=[];
+    let arrayOfNewData=[];
+    let found=false
+
+    for(let arrayOfSurvey of surveys)
+    {
+      for(let survey of arrayOfSurvey)
+      {
+          if(survey.TEMPLATE_ID!=surveyId)
+          {
+            newData.push(survey);
+      
+          }else{
+            found=true;
+          }
+
+      }       
+    }
+
+   arrayOfNewData.push(newData);
+
+   if(found){
+    writeData(arrayOfNewData);
+    res.send('deleted')
+   }else{
+     res.send('not found')
+   }
+  })
 
 
+  app.post('/add',(req,res)=>{
+    let surveys=readData();
+    surveys[0].push(req.body);
+    writeData(surveys);
+    res.send('done')
+  })
+
+
+  function writeData(data){
+    fs.writeFile('data.json',  JSON.stringify(data), err => {
+          if (err) {
+              res.status(400).send(err);
+            return
+          }
+        })
+ 
+
+  }
+  
+  function readData()
+  {
+    let data = fs.readFileSync(path.resolve(__dirname, 'data.json'));
+     return JSON.parse(data);
+  }
+
+
+  
 //fs model
 //https://www.heroku.com/
 //express server 
